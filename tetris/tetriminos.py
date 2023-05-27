@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum, unique
 
 import numpy as np
@@ -7,9 +7,15 @@ import numpy.typing as npt
 
 @dataclass
 class TetriminosStruct:
-    name: str
-    official_name: str
-    block: npt.NDArray[np.uint8]
+    name: str = field(init=True)
+    official_name: str = field(init=True)
+    block: npt.NDArray[np.uint8] = field(init=True)
+    size: int = field(init=False)
+
+    def __post_init__(self):
+        self.size = self.block.shape[0]
+        # self.rotate_random()
+        self.rotate_counterclockwise()
 
     def rotate_clockwise(self):
         self.block = np.rot90(self.block, 3)
@@ -18,12 +24,15 @@ class TetriminosStruct:
         self.block = np.rot90(self.block, 1)
 
     def rotate_random(self):
-        rndm = np.random.randint(low=0, high=4,size=1)
+        rndm = np.random.randint(low=0, high=4, size=1)
         self.block = np.rot90(self.block, rndm)
 
+    def get_relative_init_posy(self):
+        idx = np.nonzero(np.sum(self.block, axis=0))[0][-1]
+        return idx
 
 @unique
-class Tetriminos(Enum):
+class Tetriminos(Enum):  # Define NxN shape
     tm_I = TetriminosStruct(
         name='I',
         official_name='Hero',
@@ -66,11 +75,3 @@ class Tetriminos(Enum):
         block=np.array([[0, 1, 0],
                         [0, 1, 0],
                         [0, 1, 1]]))
-
-
-def get_next_tetriminos():
-    tetriminos = list(Tetriminos.__members__.keys())
-
-
-if __name__ == '__main__':
-    print()
