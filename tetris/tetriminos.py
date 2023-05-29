@@ -4,17 +4,20 @@ from enum import Enum, unique
 import numpy as np
 import numpy.typing as npt
 
+from colors import Color
+
 
 @dataclass
 class TetriminosStruct:
     name: str = field(init=True)
     official_name: str = field(init=True)
     block: npt.NDArray[np.uint8] = field(init=True)
+    color: Color = field(init=True)
     size: int = field(init=False)
-
+    
     def __post_init__(self):
         self.size = self.block.shape[0]
-        # self.rotate_random()
+        self.rotate_random()
         self.rotate_counterclockwise()
 
     def rotate_clockwise(self):
@@ -31,6 +34,7 @@ class TetriminosStruct:
         idx = np.nonzero(np.sum(self.block, axis=0))[0][-1]
         return idx
 
+
 @unique
 class Tetriminos(Enum):  # Define NxN shape
     tm_I = TetriminosStruct(
@@ -39,39 +43,46 @@ class Tetriminos(Enum):  # Define NxN shape
         block=np.array([[0, 0, 0, 0],
                         [0, 0, 0, 0],
                         [1, 1, 1, 1],
-                        [0, 0, 0, 0]])) 
+                        [0, 0, 0, 0]]),
+        color=Color.YELLOW)
     tm_O = TetriminosStruct(
         name='O',
         official_name='Smashboy',
         block=np.array([[1, 1],
-                        [1, 1]]))
+                        [1, 1]]),
+        color=Color.GREEN)
     tm_T = TetriminosStruct(
         name='T',
         official_name='Teewee',
         block=np.array([[0, 0, 0],
                         [1, 1, 1],
-                        [0, 1, 0]]))
+                        [0, 1, 0]]),
+        color=Color.ORANGE)
     tm_S = TetriminosStruct(
         name='S',
         official_name='Rhode Island Z',
         block=np.array([[0, 0, 0],
                         [0, 1, 1],
-                        [1, 1, 0]]))
+                        [1, 1, 0]]),
+        color=Color.MAGENTA)
     tm_Z = TetriminosStruct(
         name='Z',
         official_name='Cleveland Z',
         block=np.array([[0, 0, 0],
                         [1, 1, 0],
-                        [0, 1, 1]]))
+                        [0, 1, 1]]),
+        color=Color.CYAN)
     tm_J = TetriminosStruct(
         name='J',
         official_name='Blue Ricky',
         block=np.array([[0, 1, 0],
                         [0, 1, 0],
-                        [1, 1, 0]]))
+                        [1, 1, 0]]),
+        color=Color.RED)
     tm_L = TetriminosStruct(
         name='L',
         official_name='Orange Ricky',
         block=np.array([[0, 1, 0],
                         [0, 1, 0],
-                        [0, 1, 1]]))
+                        [0, 1, 1]]),
+        color=Color.BLUE)
